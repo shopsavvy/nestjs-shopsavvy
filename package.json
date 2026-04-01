@@ -1,0 +1,21 @@
+{
+  "name": "nestjs-shopsavvy",
+  "version": "1.0.0",
+  "description": "NestJS module for ShopSavvy product search and price comparison",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@shopsavvy/sdk": "latest"
+  },
+  "peerDependencies": {
+    "@nestjs/common": ">=10.0.0",
+    "@nestjs/core": ">=10.0.0"
+  },
+  "keywords": ["nestjs", "shopsavvy", "price-comparison", "module"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shopsavvy/nestjs-shopsavvy"
+  }
+}
