@@ -18,7 +18,11 @@ export class ShopSavvyService {
   private client: ShopSavvyDataAPI
 
   constructor(@Inject(SHOPSAVVY_OPTIONS) options: ShopSavvyModuleOptions) {
-    this.client = new ShopSavvyDataAPI({ apiKey: options.apiKey })
+    this.client = new ShopSavvyDataAPI({
+      apiKey: options.apiKey,
+      ...(options.baseUrl ? { baseUrl: options.baseUrl } : {}),
+      ...(options.timeout ? { timeout: options.timeout } : {}),
+    })
   }
 
   async searchProducts(query: string, options?: { limit?: number; offset?: number }) {
@@ -37,16 +41,17 @@ export class ShopSavvyService {
     return this.client.getPriceHistory(identifier, start, end, options)
   }
 
-  async getDeals(options?: { limit?: number; sort?: string }) {
-    return this.client.getDeals(options as any)
+  /** Deals, with the Data API's sort (hot, new, top-hour, top-day, top-week) and filters. */
+  async getDeals(options?: Parameters<ShopSavvyDataAPI["getDeals"]>[0]) {
+    return this.client.getDeals(options)
   }
 
   async getUsage() {
     return this.client.getUsage()
   }
 
-  async scheduleProductMonitoring(identifier: string, schedule: string) {
-    return this.client.scheduleProductMonitoring(identifier, schedule as any)
+  async scheduleProductMonitoring(identifier: string, frequency: "hourly" | "daily" | "weekly", options?: { retailer?: string }) {
+    return this.client.scheduleProductMonitoring(identifier, frequency, options)
   }
 
   async removeProductFromSchedule(identifier: string) {
