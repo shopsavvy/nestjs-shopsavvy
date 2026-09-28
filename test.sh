@@ -1,45 +1,26 @@
 #!/bin/bash
 set -e
 
-echo "ShopSavvy NestJS Module Tests"
-echo "=============================="
-
-echo "Running structural checks..."
-echo ""
-
-echo "Checking required files..."
-REQUIRED="src/index.ts src/shopsavvy.module.ts src/shopsavvy.service.ts src/constants.ts package.json README.md"
-MISSING=0
-for f in $REQUIRED; do
-  if [ ! -f "$f" ]; then
-    echo "  Missing: $f"
-    MISSING=$((MISSING + 1))
-  fi
-done
-if [ $MISSING -eq 0 ]; then
-  echo "  All required files present ($(echo $REQUIRED | wc -w | tr -d ' ') files)"
-else
-  echo "  $MISSING required files missing"
+if [ ! -f package.json ] || ! grep -q '"name": "nestjs-shopsavvy"' package.json; then
+  echo "WARNING: run test.sh from the nestjs-shopsavvy directory"
   exit 1
 fi
 
-echo "Checking TypeScript syntax..."
-if command -v bun &> /dev/null; then
-  ERRORS=0
-  for f in src/*.ts; do
-    if ! bun build --no-bundle "$f" --outfile /tmp/nestjs-shopsavvy-check.js > /dev/null 2>&1; then
-      echo "  Syntax error: $f"
-      ERRORS=$((ERRORS + 1))
-    fi
-  done
-  if [ $ERRORS -eq 0 ]; then
-    echo "  All TypeScript files pass syntax check"
-  else
-    echo "  $ERRORS files have syntax errors"
-    exit 1
-  fi
-  rm -f /tmp/nestjs-shopsavvy-check.js
-fi
+echo "ShopSavvy NestJS Module Tests"
+echo "=============================="
+
+echo "Installing dependencies..."
+bun install --silent
+
+echo "Building + typechecking..."
+bun run typecheck
+
+echo "Running tests (real Nest app using the built package, real SDK, local API stand-in)..."
+bun test tests
+
+echo "Checking the built package loads in Node..."
+node -e 'require("reflect-metadata"); const m = require("./dist"); if (typeof m.ShopSavvyModule?.forRoot !== "function" || typeof m.ShopSavvyService !== "function") process.exit(1)'
+echo "  OK"
 
 echo ""
-echo "All unit checks passed"
+echo "All checks passed"
