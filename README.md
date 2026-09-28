@@ -53,11 +53,12 @@ export class ProductsController {
 ```typescript
 shopsavvy.searchProducts(query, { limit?, offset? })
 shopsavvy.getProductDetails(identifier)
-shopsavvy.getCurrentOffers(identifier, { retailer? })
-shopsavvy.getPriceHistory(identifier, start, end, { retailer? })
-shopsavvy.getDeals({ limit?, sort? })
+shopsavvy.getCurrentOffers(identifier, { retailer? })   // retailer is a domain, e.g. "amazon.com"
+shopsavvy.getPriceHistory(identifier, start, end, { retailer? })   // start/end as "YYYY-MM-DD"
+shopsavvy.getDeals({ sort?, limit?, offset?, category?, retailer?, tag?, grade?, min_price?, max_price? })
+// sort: "hot" | "new" | "top-hour" | "top-day" | "top-week"
 shopsavvy.getUsage()
-shopsavvy.scheduleProductMonitoring(identifier, schedule)
+shopsavvy.scheduleProductMonitoring(identifier, "hourly" | "daily" | "weekly", { retailer? })
 shopsavvy.removeProductFromSchedule(identifier)
 shopsavvy.getScheduledProducts()
 shopsavvy.getClient() // raw SDK client
@@ -70,8 +71,13 @@ Get your API key at [shopsavvy.com/data](https://shopsavvy.com/data).
 ```typescript
 ShopSavvyModule.forRoot({
   apiKey: process.env.SHOPSAVVY_API_KEY!,
+  // optional
+  timeout: 10000,       // request timeout in ms (default 30000)
+  baseUrl: undefined,   // override the ShopSavvy API base URL
 })
 ```
+
+`ShopSavvyModule` is global: import it once in your root module and inject `ShopSavvyService` anywhere. Works with NestJS 10 and 11.
 
 ## License
 
