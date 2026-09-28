@@ -54,7 +54,7 @@ export class ProductsController {
 shopsavvy.searchProducts(query, { limit?, offset? })
 shopsavvy.getProductDetails(identifier)
 shopsavvy.getCurrentOffers(identifier, { retailer? })   // retailer is a domain, e.g. "amazon.com"
-shopsavvy.getPriceHistory(identifier, start, end, { retailer? })   // start/end as "YYYY-MM-DD"
+shopsavvy.getPriceHistory(identifier, start, end, { retailer? })   // start/end as "YYYY-MM-DD"; data = products -> offers -> history (newest first)
 shopsavvy.getDeals({ sort?, limit?, offset?, category?, retailer?, tag?, grade?, min_price?, max_price? })
 // sort: "hot" | "new" | "top-hour" | "top-day" | "top-week"
 shopsavvy.getUsage()
